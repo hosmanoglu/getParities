@@ -1,5 +1,6 @@
 # for run
-npm i 
+npm i
+ 
 npm run start
 
 ### install kafka to local docker
