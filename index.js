@@ -2,10 +2,10 @@ const { fetchParities } = require("./fetchParities");
 const { sendKafka } = require("./producer");
 const { TOPICS } = require("./enums");
 const { timeout } = require("./utils");
-
+let parities = null;
 async function main() {
   try {
-    const parities = await fetchParities();
+    parities = parities ?? (await fetchParities());
 
     await sendKafka([
       {

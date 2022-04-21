@@ -1,14 +1,14 @@
 const {
   KAFKA_HOST: host,
-  PORT: port,
-  MECHANISM: mechanism,
+  KAFKA_PORT: port,
+  KAFKA_MECHANISM: mechanism = "plain",
   KAFKA_USERNAME: username,
   KAFKA_PASSWORD: password,
 } = process.env;
 
 const clientOptions = {
   kafkaHost: `${host ?? "localhost"}:${port ?? 9092}`,
-  ...(username ? { mechanism, username, password } : {}),
+  ...(username ? { sasl: { mechanism, username, password } } : {}),
 };
 
 const { TOPICS } = require("./enums");
@@ -34,11 +34,16 @@ producer.on("ready", function () {
   );
 });
 
+producer.on("error", function (err) {
+  topicReady = 0;
+  console.log(err);
+});
+
 function sendKafka(payloads) {
   return new Promise((resolve, reject) => {
     if (!topicReady) {
       reject("topic not ready");
-      return
+      return;
     }
     producer.send(payloads, function (err, data) {
       resolve(data);
