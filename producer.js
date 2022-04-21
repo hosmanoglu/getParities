@@ -38,6 +38,7 @@ function sendKafka(payloads) {
   return new Promise((resolve, reject) => {
     if (!topicReady) {
       reject("topic not ready");
+      return
     }
     producer.send(payloads, function (err, data) {
       resolve(data);
